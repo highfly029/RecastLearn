@@ -1,5 +1,5 @@
 
-newmtl Default-Line
+newmtl red
 Ka  0.6 0.6 0.6
 Kd  0.6 0.6 0.6
 Ks  0.9 0.9 0.9
@@ -10,7 +10,7 @@ illum 2
 
 
 
-newmtl red
+newmtl Default-Material
 Ka  0.6 0.6 0.6
 Kd  0.6 0.6 0.6
 Ks  0.9 0.9 0.9

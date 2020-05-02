@@ -30,6 +30,7 @@ public class EditorObjExporter : ScriptableObject
 	private static int vertexOffset = 0;
 	private static int normalOffset = 0;
 	private static int uvOffset = 0;
+	private static int xMaxSize = 0;
  
  
 	//User should probably be able to change this. It is currently left as an excercise for
@@ -51,7 +52,7 @@ public class EditorObjExporter : ScriptableObject
  
 			//This is sort of ugly - inverting x-component since we're in
 			//a different coordinate system than "everyone" is "used to".
-			sb.Append(string.Format("v {0} {1} {2}\n",-wv.x,wv.y,wv.z));
+			sb.Append(string.Format("v {0} {1} {2}\n",xMaxSize-wv.x,wv.y,wv.z));
 		}
 		sb.Append("\n");
  
@@ -285,13 +286,31 @@ public class EditorObjExporter : ScriptableObject
  
 		if (exportedObjects > 0)
 		{
+			float xMin = 0;
+			float xMax = 0;
 			MeshFilter[] mf = new MeshFilter[mfList.Count];
  
 			for (int i = 0; i < mfList.Count; i++)
 			{
 				mf[i] = (MeshFilter)mfList[i];
+
+				Mesh m = mf[i].sharedMesh;
+				foreach(Vector3 lv in m.vertices) 
+				{
+					Vector3 wv = mf[i].transform.TransformPoint(lv);
+
+					if(wv.x > xMax) {
+						xMax = wv.x;
+					}
+					if(wv.x < xMin) {
+						xMin = wv.x;
+					}		
+				}
+				xMaxSize = Convert.ToInt32(xMax - xMin);
 			}
- 
+
+			EditorUtility.DisplayDialog("xMaxSize", "=" + xMaxSize, "");
+
 			string filename = EditorSceneManager.GetActiveScene().name + "_" + exportedObjects;
  
 			int stripIndex = filename.LastIndexOf(Path.PathSeparator);
